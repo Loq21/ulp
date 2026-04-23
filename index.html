@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ulp - Образовательный Сайт</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+        }
+
+        /* Кастомный скролл */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.03);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 100, 100, 0.25);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(80, 80, 80, 0.4);
+        }
+
+        /* Фиксированный фон с иконками */
+        .bg-decoration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+            filter: none;
+        }
+
+        .floating-icon:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; color: #777777; }
+        .floating-icon:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; color: #e74c3c; }
+        .floating-icon:nth-child(3) { top: 60%; left: 8%; animation-delay: 4s; color: #f39c12; }
+        .floating-icon:nth-child(4) { top: 70%; right: 5%; animation-delay: 6s; color: #9b59b6; }
+        .floating-icon:nth-child(5) { top: 40%; left: 15%; animation-delay: 8s; color: #1abc9c; }
+        .floating-icon:nth-child(6) { top: 15%; left: 40%; animation-delay: 10s; color: #e67e22; }
+        .floating-icon:nth-child(7) { top: 80%; left: 30%; animation-delay: 12s; color: #34495e; }
+        .floating-icon:nth-child(8) { top: 50%; right: 20%; animation-delay: 14s; color: #16a085; }
+        .floating-icon:nth-child(9) { top: 30%; right: 35%; animation-delay: 16s; color: #c0392b; }
+        .floating-icon:nth-child(10) { top: 85%; right: 40%; animation-delay: 18s; color: #8e44ad; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+        }
+
+        /* Шапка */
+        header {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 4rem);
+            max-width: 1400px;
+            z-index: 100;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            cursor: pointer;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .header-nav-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            color: #333;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .header-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        /* Основной контент */
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 120px 2rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-bottom: 3rem;
+            border-radius: 30px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grade-banner {
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #444;
+        }
+
+        .grade-banner i {
+            font-size: 1.5rem;
+            color: #666666;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .subject-card {
+            padding: 2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .subject-card:hover::before {
+            opacity: 1;
+        }
+
+        .subject-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .algebra .subject-icon { color: #777777; }
+        .geometry .subject-icon { color: #e74c3c; }
+        .russian .subject-icon { color: #9b59b6; }
+        .history .subject-icon { color: #e74c3c; }
+        .english .subject-icon { color: #34495e; }
+        .physics .subject-icon { color: #1abc9c; }
+
+        .subject-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .subject-card p {
+            color: #444;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            margin-bottom: 2rem;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(-5px);
+        }
+
+        .class-page {
+            display: none;
+        }
+
+        .class-page.active {
+            display: block;
+        }
+
+        .book-part-section {
+            margin-bottom: 2rem;
+        }
+
+        .book-part-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .exercise-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .exercise-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .class-info {
+            text-align: center;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 30px;
+        }
+
+        .class-info h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .class-info p {
+            color: #666;
+        }
+
+        .book-info {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+
+        /* СТРАНИЦА РЕШЕНИЯ */
+        .solution-page {
+            display: none;
+            min-height: calc(100vh - 120px);
+            padding: 2rem;
+        }
+
+        .solution-page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .solution-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .solution-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .solution-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-arrow {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.1);
+        }
+
+.solution-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 500px;
+    padding: 0;
+    position: relative;
+    overflow: visible;
+}
+
+.solution-image-wrapper {
+    position: relative;
+    overflow: visible;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    cursor: grab;
+}
+
+.solution-image-wrapper:active {
+    cursor: grabbing;
+}
+
+        .solution-image {
+    width: 90%;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    object-fit: contain;
+    transition: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    transform-origin: center center;
+    position: relative;
+    z-index: 1;
+}
+
+        .solution-image.small-image {
+            width: 60%;
+        }
+
+        .solution-image.large-image {
+            width: 95%;
+        }
+
+        .solution-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .solution-error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #666;
+        }
+
+        .solution-error i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #e74c3c;
+        }
+
+        .variant-selector {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .variant-btn {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .variant-btn:hover, .variant-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .variant-btn.active {
+            background: #666666;
+            color: white;
+        }
+
+        /* Секции физики */
+        .physics-section {
+            margin-bottom: 2rem;
+        }
+
+        .physics-section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            background: rgba(26, 188, 156, 0.15);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #16a085;
+        }
+
+        .physics-section-title i {
+            font-size: 1.2rem;
+        }
+
+        .paragraph-card {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .paragraph-card:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(5px);
+        }
+
+        .paragraph-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .paragraph-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .paragraph-type {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            background: rgba(26, 188, 156, 0.2);
+            color: #16a085;
+            font-weight: 500;
+        }
+
+        .paragraph-type.zadanie {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+        }
+
+        .paragraph-type.upr {
+            background: rgba(52, 152, 219, 0.15);
+            color: #777777;
+        }
+
+        .paragraph-type.ps {
+            background: rgba(155, 89, 182, 0.15);
+            color: #9b59b6;
+        }
+
+        .paragraph-type.lr {
+            background: rgba(243, 156, 18, 0.15);
+            color: #f39c12;
+        }
+
+        .paragraph-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .paragraph-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .paragraph-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .lab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .lab-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lab-btn i {
+            font-size: 1.5rem;
+            color: #f39c12;
+        }
+
+        .lab-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Адаптивность */
+        
+        /* ===== ANIMATIONS ===== */
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInBlur {
+            from {
+                opacity: 0;
+                filter: blur(10px);
+            }
+            to {
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-180deg) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes flipInX {
+            from {
+                opacity: 0;
+                transform: perspective(400px) rotateX(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: perspective(400px) rotateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Apply entrance animations */
+        .subject-card {
+            animation: slideInUp 0.6s ease backwards;
+        }
+
+        .subject-card:nth-child(1) { animation-delay: 0.1s; }
+        .subject-card:nth-child(2) { animation-delay: 0.2s; }
+        .subject-card:nth-child(3) { animation-delay: 0.3s; }
+        .subject-card:nth-child(4) { animation-delay: 0.4s; }
+        .subject-card:nth-child(5) { animation-delay: 0.5s; }
+        .subject-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .hero {
+            animation: fadeInBlur 0.8s ease;
+        }
+
+        .grade-banner {
+            animation: slideInUp 0.5s ease 0.2s backwards;
+        }
+
+        header {
+            animation: slideInDown 0.5s ease;
+        }
+
+        /* Enhanced hover animations */
+        .subject-card:hover .subject-icon {
+            animation: pulse 0.6s ease;
+        }
+
+        /* Exercise buttons animation */
+        .exercise-btn {
+            animation: scaleIn 0.4s ease backwards;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exercise-btn:hover {
+            transform: scale(1.15) rotate(3deg);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .exercise-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Stagger animation for exercise grid */
+        .exercise-grid .exercise-btn:nth-child(1) { animation-delay: 0.02s; }
+        .exercise-grid .exercise-btn:nth-child(2) { animation-delay: 0.04s; }
+        .exercise-grid .exercise-btn:nth-child(3) { animation-delay: 0.06s; }
+        .exercise-grid .exercise-btn:nth-child(4) { animation-delay: 0.08s; }
+        .exercise-grid .exercise-btn:nth-child(5) { animation-delay: 0.10s; }
+        .exercise-grid .exercise-btn:nth-child(6) { animation-delay: 0.12s; }
+        .exercise-grid .exercise-btn:nth-child(7) { animation-delay: 0.14s; }
+        .exercise-grid .exercise-btn:nth-child(8) { animation-delay: 0.16s; }
+        .exercise-grid .exercise-btn:nth-child(9) { animation-delay: 0.18s; }
+        .exercise-grid .exercise-btn:nth-child(10) { animation-delay: 0.20s; }
+
+        /* Paragraph cards animation */
+        .paragraph-card {
+            animation: slideInUp 0.5s ease backwards;
+            transition: all 0.3s ease;
+        }
+
+        .paragraph-card:hover {
+            transform: translateX(10px) scale(1.01);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Lab buttons animation */
+        .lab-btn {
+            animation: bounceIn 0.5s ease backwards;
+            transition: all 0.3s ease;
+        }
+
+        .lab-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        .lab-btn:hover i {
+            animation: rotateIn 0.5s ease;
+        }
+
+        /* Navigation arrows */
+        .nav-arrow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.15);
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.9);
+        }
+
+        /* Back button animation */
+        .back-btn {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .back-btn:hover::after {
+            left: 100%;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Header nav buttons */
+        .header-nav-btn {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .header-nav-btn::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #666666;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .header-nav-btn:hover::before {
+            width: 80%;
+        }
+
+        .header-nav-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Settings button */
+        .settings-btn {
+            transition: all 0.3s ease;
+        }
+
+        .settings-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 6px 30px rgba(0,0,0,0.3);
+        }
+
+        /* Zoom controls */
+        .zoom-btn {
+            transition: all 0.3s ease;
+        }
+
+        .zoom-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Book cover */
+        .book-cover-img {
+            transition: all 0.4s ease;
+        }
+
+        .book-cover-img:hover {
+            transform: scale(1.08) rotate(-3deg);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+        }
+
+        /* Timeline items */
+        .timeline-item {
+            animation: scaleIn 0.3s ease backwards;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        .timeline-item.active {
+            animation: pulse 2s ease infinite;
+        }
+
+        /* Content section transitions */
+        .content-section {
+            transition: opacity 0.3s ease;
+        }
+
+        .solution-page {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Variant buttons */
+        .variant-btn {
+            transition: all 0.3s ease;
+        }
+
+        .variant-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer links */
+        .footer-links a {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: #666666;
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Loading spinner enhancement */
+        .solution-loading {
+            animation: pulse 1.5s ease infinite;
+        }
+
+        /* Image loading */
+        .solution-image {
+            transition: opacity 0.3s ease, transform 0.1s ease;
+        }
+
+        .solution-image[style*="display: block"] {
+            animation: fadeInBlur 0.5s ease;
+        }
+
+        /* Modal animation */
+        .settings-modal {
+            transition: opacity 0.3s ease;
+        }
+
+        .settings-content {
+            animation: scaleIn 0.3s ease;
+        }
+
+        /* Theme switch */
+        .theme-switch {
+            transition: all 0.3s ease;
+        }
+
+        .theme-switch::after {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Floating icons enhancement */
+        .floating-icon {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Logo animation */
+        .logo {
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        /* Paragraph buttons */
+        .paragraph-btn {
+            transition: all 0.3s ease;
+        }
+
+        .paragraph-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Class info card */
+        .class-info {
+            animation: slideInUp 0.5s ease;
+        }
+
+        /* Book part titles */
+        .book-part-title {
+            animation: slideInLeft 0.4s ease;
+        }
+
+        /* Physics section titles */
+        .physics-section-title {
+            animation: slideInLeft 0.4s ease;
+        }
+
+        /* Scrollbar thumb animation */
+        ::-webkit-scrollbar-thumb {
+            transition: all 0.3s ease;
+        }
+@media (max-width: 768px) {
+            header {
+                width: calc(100% - 2rem);
+                top: 0.5rem;
+            }
+            .header-content {
+                padding: 0.75rem 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .header-nav {
+                gap: 0.3rem;
+            }
+            .header-nav-btn {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.75rem;
+            }
+            .hero h1 { font-size: 2rem; }
+            .subjects-grid { grid-template-columns: 1fr; }
+            main {
+                padding-top: 140px;
+            }
+            .exercise-grid {
+                grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            }
+            .exercise-btn {
+                font-size: 0.9rem;
+            }
+            .solution-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .solution-image {
+                width: 95%;
+            }
+            .solution-image.small-image {
+                width: 80%;
+            }
+            .paragraph-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .lab-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+        }
+
+        /* Кнопка настроек */
+        .settings-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Модальное окно настроек */
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .settings-modal.active {
+            display: flex;
+        }
+
+        .settings-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 30px;
+            min-width: 300px;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-header h3 {
+            font-size: 1.3rem;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .theme-switch {
+            width: 60px;
+            height: 30px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-switch.active {
+            background: #666666;
+        }
+
+        .theme-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .theme-switch.active::after {
+            left: 32px;
+        }
+
+        /* Темная тема */
+        body.dark-theme {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #f0f0f0;
+        }
+
+        body.dark-theme ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.03);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        body.dark-theme ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        body.dark-theme header {
+            background: rgba(30, 30, 35, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        body.dark-theme .glass {
+            background: rgba(40, 40, 45, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        body.dark-theme .hero h1 {
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 100%);
+            -webkit-background-clip: text;
+        }
+
+        body.dark-theme .hero p {
+            color: #b0b0b0;
+        }
+
+        body.dark-theme .grade-banner {
+            background: rgba(40, 40, 45, 0.6);
+            color: #ccc;
+        }
+
+        body.dark-theme .grade-banner i {
+            color: #999999;
+        }
+
+        body.dark-theme .subject-card h2 {
+            color: #ffffff;
+        }
+
+        body.dark-theme .subject-card p {
+            color: #c0c0c0;
+        }
+
+        body.dark-theme .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-theme .exercise-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .exercise-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        body.dark-theme .class-info p {
+            color: #909090;
+        }
+
+        body.dark-theme .book-info {
+            color: #666;
+        }
+
+        body.dark-theme .settings-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a1a;
+        }
+
+        body.dark-theme .settings-content {
+            background: rgba(40, 40, 45, 0.98);
+            color: #f0f0f0;
+        }
+
+        body.dark-theme .close-settings {
+            color: #aaa;
+        }
+
+        body.dark-theme .settings-item {
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        body.dark-theme .floating-icon {
+            opacity: 0.04;
+        }
+
+        body.dark-theme .logo {
+            color: #f0f0f0;
+        }
+
+        body.dark-theme .header-nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .header-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        body.dark-theme .nav-arrow {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-theme .variant-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .variant-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-theme .variant-btn.active {
+            background: #666666;
+            color: white;
+        }
+
+        body.dark-theme .book-part-title {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f0f0f0;
+        }
+
+        body.dark-theme .paragraph-card {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-theme .paragraph-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        body.dark-theme .paragraph-title {
+            color: #f0f0f0;
+        }
+
+        body.dark-theme .physics-section-title {
+            background: rgba(26, 188, 156, 0.2);
+            color: #1abc9c;
+        }
+
+        body.dark-theme .paragraph-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .paragraph-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        body.dark-theme .lab-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        body.dark-theme .lab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Футер */
+        .site-footer {
+            margin-top: 4rem;
+            padding: 3rem 2rem 1.5rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .footer-section p {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #555;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+            cursor: pointer;
+            display: inline-block;
+            padding: 0.25rem 0;
+            width: fit-content;
+        }
+
+        .footer-links a:hover {
+            color: #666666;
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Темная тема для футера */
+        body.dark-theme .site-footer {
+            background: rgba(30, 30, 35, 0.3);
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-theme .footer-section h4 {
+            color: #f0f0f0;
+        }
+
+        body.dark-theme .footer-section p {
+            color: #aaa;
+        }
+
+        body.dark-theme .footer-links a {
+            color: #bbb;
+        }
+
+        body.dark-theme .footer-links a:hover {
+            color: #999999;
+        }
+
+        body.dark-theme .footer-bottom {
+            border-top-color: rgba(255,255,255,0.1);
+            color: #666;
+        }
+
+        /* Адаптивность футера */
+        @media (max-width: 768px) {
+            .site-footer {
+                padding: 2rem 1rem 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 1.5rem;
+            }
+
+            .footer-links a {
+                margin: 0 auto;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        /* Zoom controls */
+        .zoom-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 50;
+        }
+
+        .zoom-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark-theme .zoom-btn {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1a1a1a;
+        }
+
+        .zoom-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .zoom-reset {
+            font-size: 0.9rem;
+        }
+
+        .book-cover-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.book-cover-img {
+    width: 160px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.book-cover-img:hover {
+    transform: scale(1.05) rotate(-2deg);
+}
+
+.book-cover-info {
+    flex: 1;
+    min-width: 200px;
+}
+
+.book-cover-info h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.book-cover-info p {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.number-timeline-wrapper {
+    margin: 1rem auto 2rem;
+    padding: 10px;
+    border-radius: 20px;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.number-timeline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeline-item {
+    min-width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.timeline-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+}
+
+.timeline-item.active {
+    background: #666666;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(102, 102, 102, 0.4);
+}
+
+/* Стили для темной темы */
+body.dark-theme .timeline-item {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+body.dark-theme .timeline-item.active {
+    background: #666666;
+    color: white;
+}
+
+        /* Book metadata in class view */
+        .book-meta {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .book-meta-item {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .book-meta-label {
+            font-weight: 500;
+            color: #777;
+            white-space: nowrap;
+        }
+
+        .book-meta-value {
+            color: #333;
+        }
+
+        body.dark-theme .book-meta-label {
+            color: #999;
+        }
+
+        body.dark-theme .book-meta-value {
+            color: #ddd;
+        }
+
+        @media (max-width: 768px) {
+            .book-meta {
+                width: 100%;
+            }
+            .book-meta-item {
+                flex-wrap: wrap;
+            }
+        }
+</style>
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+    <!-- Фоновые иконки -->
+    <div class="bg-decoration">
+        <i class="fas fa-square-root-alt floating-icon"></i>
+        <i class="fas fa-shapes floating-icon"></i>
+        <i class="fas fa-chart-bar floating-icon"></i>
+        <i class="fas fa-language floating-icon"></i>
+        <i class="fas fa-book-open floating-icon"></i>
+        <i class="fas fa-atom floating-icon"></i>
+        <i class="fas fa-landmark floating-icon"></i>
+        <i class="fas fa-globe floating-icon"></i>
+        <i class="fas fa-calculator floating-icon"></i>
+        <i class="fas fa-pen floating-icon"></i>
+    </div>
+
+    <!-- Шапка -->
+    <header>
+        <div class="header-content">
+            <div class="logo" onclick="showMain()">
+                <span>ulp</span>
+            </div>
+            <nav class="header-nav">
+                <button class="header-nav-btn" onclick="openSubject('algebra')">Алгебра</button>
+                <button class="header-nav-btn" onclick="openSubject('geometry')">Геометрия</button>
+                <button class="header-nav-btn" onclick="openSubject('russian')">Русский</button>
+                <button class="header-nav-btn" onclick="openSubject('history')">История</button>
+                <button class="header-nav-btn" onclick="openSubject('english')">Английский</button>
+                <button class="header-nav-btn" onclick="openSubject('physics')">Физика</button>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Главная страница -->
+        <section id="main-view" class="content-section active">
+            <div class="grade-banner glass">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Готовые домашние задания только для <strong>7 класса</strong></span>
+            </div>
+
+            <div class="subjects-grid">
+                <div class="subject-card glass algebra" onclick="openSubject('algebra')">
+                    <div class="subject-icon">
+                        <i class="fas fa-square-root-alt"></i>
+                    </div>
+                    <h2>Алгебра</h2>
+                    <p>7 класс — Макарычев</p>
+                </div>
+
+                <div class="subject-card glass geometry" onclick="openSubject('geometry')">
+                    <div class="subject-icon">
+                        <i class="fas fa-shapes"></i>
+                    </div>
+                    <h2>Геометрия</h2>
+                    <p>7 класс — Мерзляк</p>
+                </div>
+
+                <div class="subject-card glass russian" onclick="openSubject('russian')">
+                    <div class="subject-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h2>Русский язык</h2>
+                    <p>7 класс — Ладыженская</p>
+                </div>
+
+                <div class="subject-card glass history" onclick="openSubject('history')">
+                    <div class="subject-icon">
+                        <i class="fas fa-landmark"></i>
+                    </div>
+                    <h2>История</h2>
+                    <p>7 класс — Контурные карты</p>
+                </div>
+
+                <div class="subject-card glass english" onclick="openSubject('english')">
+                    <div class="subject-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h2>Английский язык</h2>
+                    <p>7 класс — Вербицкая</p>
+                </div>
+
+                <div class="subject-card glass physics" onclick="openSubject('physics')">
+                    <div class="subject-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <h2>Физика</h2>
+                    <p>7 класс — Перышкин</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Страница класса -->
+        <section id="class-view" class="content-section class-page">
+            <button class="back-btn glass" onclick="showMain()">
+                <i class="fas fa-arrow-left"></i> На главную
+            </button>
+            <!-- Обложка учебника -->
+<div class="book-cover-section glass" id="book-cover-section" style="display: none; padding: 1.5rem 2rem; border-radius: 24px;">
+    <img class="book-cover-img" id="book-cover-img" src="" alt="Обложка учебника">
+    <div class="book-cover-info">
+        <h2 id="cover-title">Предмет</h2>
+        <p id="cover-subtitle">7 класс</p>
+        <div class="book-meta" id="book-meta" style="display:none;">
+            <div class="book-meta-item">
+                <span class="book-meta-label">Авторы:</span>
+                <span class="book-meta-value" id="meta-authors"></span>
+            </div>
+            <div class="book-meta-item">
+                <span class="book-meta-label">Тип книги:</span>
+                <span class="book-meta-value" id="meta-type"></span>
+            </div>
+            <div class="book-meta-item">
+                <span class="book-meta-label">Год:</span>
+                <span class="book-meta-value" id="meta-year"></span>
+            </div>
+            <div class="book-meta-item">
+                <span class="book-meta-label">Часть:</span>
+                <span class="book-meta-value" id="meta-parts"></span>
+            </div>
+        </div>
+    </div>
+</div>
+            <div class="class-info glass">
+                <h2 id="class-title">Предмет</h2>
+                <p id="class-subtitle">Нажми на номер задания чтобы открыть решение</p>
+                <div class="book-info" id="book-info">7 класс</div>
+            </div>
+
+            <div id="book-parts-container">
+                <div class="exercise-grid" id="exercise-grid"></div>
+            </div>
+
+            <div id="physics-container" style="display: none;">
+                <div class="physics-section">
+                    <div class="physics-section-title glass">
+                        <i class="fas fa-flask"></i>
+                        Лабораторные работы
+                    </div>
+                    <div class="lab-grid" id="lab-grid"></div>
+                </div>
+
+                <div class="physics-section">
+                    <div class="physics-section-title glass">
+                        <i class="fas fa-book"></i>
+                        Параграфы учебника
+                    </div>
+                    <div id="paragraphs-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СТРАНИЦА РЕШЕНИЯ -->
+        <section id="solution-view" class="solution-page">
+            <button class="back-btn glass" onclick="showClassView()">
+                <i class="fas fa-arrow-left"></i> К списку заданий
+            </button>
+
+            <div class="solution-header">
+                <div class="solution-title" id="solution-title">
+                    <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>
+                    <span id="solution-subject">Предмет</span> — 
+                    <span id="solution-number">1</span>
+                </div>
+                <div class="solution-nav">
+                    <button class="nav-arrow glass" onclick="prevExercise()" title="Предыдущее задание">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow glass" onclick="nextExercise()" title="Следующее задание">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+<div class="number-timeline-wrapper glass">
+    <div class="number-timeline" id="number-timeline">
+        </div>
+</div>
+
+<div class="solution-image-container" id="solution-container">
+    <div class="solution-loading" id="solution-loading">
+        <i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>
+        Загрузка решения...
+    </div>
+    <div class="solution-image-wrapper" id="solution-image-wrapper">
+        <img class="solution-image" id="solution-image" style="display: none;" draggable="false" />
+    </div>
+    <div class="solution-error" id="solution-error" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>Не удалось загрузить решение</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Попробуйте другое задание</p>
+    </div>
+</div>
+
+            <div class="variant-selector" id="variant-selector" style="display: none;">
+                <span style="margin-right: 1rem; color: #666;">Вариант:</span>
+                <button class="variant-btn active" onclick="switchVariant(1)">1</button>
+                <button class="variant-btn" onclick="switchVariant(2)">2</button>
+                <button class="variant-btn" onclick="switchVariant(3)">3</button>
+            </div>
+
+            <div class="book-info" id="solution-book-info" style="text-align: center; margin-top: 1rem;">
+                7 класс
+            </div>
+        </section>
+    </main>
+
+    <!-- Zoom controls -->
+    <div class="zoom-controls" id="zoom-controls" style="display: none;">
+        <button class="zoom-btn" onclick="zoomIn()" title="Приблизить">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button class="zoom-btn zoom-reset" onclick="zoomReset()" title="Сбросить">
+            <i class="fas fa-compress"></i>
+        </button>
+        <button class="zoom-btn" onclick="zoomOut()" title="Отдалить">
+            <i class="fas fa-minus"></i>
+        </button>
+    </div>
+
+    <!-- Футер -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ulp</h4>
+                <p>Готовые домашние задания для 7 класса</p>
+            </div>
+            <div class="footer-section">
+                <h4>Предметы</h4>
+                <div class="footer-links">
+                    <a onclick="openSubject('algebra')">Алгебра</a>
+                    <a onclick="openSubject('geometry')">Геометрия</a>
+                    <a onclick="openSubject('russian')">Русский язык</a>
+                    <a onclick="openSubject('history')">История</a>
+                    <a onclick="openSubject('english')">Английский</a>
+                    <a onclick="openSubject('physics')">Физика</a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Ссылки</h4>
+                <div class="footer-links">
+                    <a href="https://github.com" target="_blank">GitHub</a>
+                    <a onclick="openSettings()">Настройки</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2026 ulp. Все права защищены.</span>
+            <span>v3.5.0</span>
+        </div>
+    </footer>
+
+    <!-- Кнопка настроек -->
+    <button class="settings-btn" onclick="openSettings()">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- Модальное окно настроек -->
+    <div class="settings-modal" id="settings-modal" onclick="closeSettings(event)">
+        <div class="settings-content" onclick="event.stopPropagation()">
+            <div class="settings-header">
+                <h3>Настройки</h3>
+                <button class="close-settings" onclick="closeSettings()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="settings-item">
+                <span>Темная тема</span>
+                <div class="theme-switch" id="theme-switch" onclick="toggleTheme()"></div>
+            </div>
+            <div class="settings-item">
+                <span>Версия</span>
+                <span style="color: #888;">3.5.0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const bookCovers = {
+    'algebra': 'https://gdz.top/media/algebra_07/makarychev-fgos/covers/cover1.webp',
+    'geometry': 'https://gdz.top/media/geometrija_07/merzlyak-u23/covers/cover1.webp',
+    'russian': 'https://gdz.top/media/russian_07/ladygensk-uch23/covers/cover1.webp',
+    'history': 'https://gdz.top/media/istoriya_07/torop-kk23/covers/cover1.webp',
+    'english': 'https://gdz.top/media/english_07/verbickaja-rt17/covers/cover1.webp',
+    'physics': 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368' // у физики нет
+};
+
+        // Конфигурация URL-шаблонов для 7 класса
+        const bookConfigs = {
+            'algebra': {
+                baseUrl: 'https://pomogalka.me/img/7-klass-makarychev-2023/',
+                format: '{num}.png',
+                maxNum: 1247,
+                variants: false,
+                smallImage: false
+            },
+            'geometry': {
+                baseUrl: 'https://pomogalka.me/img/7-klass-merzlyak-geometrija/',
+                format: '{num}.png',
+                maxNum: 744,
+                variants: false,
+                smallImage: false
+            },
+            'russian': {
+                baseUrl: 'https://pomogalka.me/img/7-klass-ladyzhenskaya-2023/',
+                format: '{num}.png',
+                maxNum: 644,
+                variants: false,
+                smallImage: true,
+                parts: [
+                    { name: 'Часть 1', start: 1, end: 390 },
+                    { name: 'Часть 2', start: 391, end: 644 }
+                ]
+            },
+            'history': {
+                baseUrl: 'https://gdz.top/media/istoriya_07/torop-kk23/1-01/',
+                format: '{num}-1.webp',
+                maxNum: 16,
+                variants: false,
+                smallImage: true,
+                isHistory: true,
+                startPage: 2
+            },
+            'english': {
+                baseUrl: 'https://gdz.top/media/english_07/verbickaja-rt17/1-14/',
+                format: '{num}-{variant}.webp',
+                maxNum: 150,
+                variants: true,
+                maxVariant: 3,
+                smallImage: true
+            },
+            'physics': {
+                baseUrl: 'https://reshak.ru/reshebniki/fizika/7/perishkin/images1/',
+                format: '{type}/{num}.png',
+                maxNum: 68,
+                variants: false,
+                smallImage: false,
+                largeImage: true,
+                isPhysics: true,
+                paragraphs: [
+                    { num: 1, title: 'Что изучает физика', types: ['par', 'zad'] },
+                    { num: 2, title: 'Некоторые физические термины', types: ['par'] },
+                    { num: 3, title: 'Наблюдения и опыты', types: ['par'] },
+                    { num: 4, title: 'Физические величины. Измерение физических величин', types: ['par', 'upr', 'zad'] },
+                    { num: 5, title: 'Точность и погрешность измерений', types: ['par', 'zad'] },
+                    { num: 6, title: 'Физика и техника', types: ['par', 'ps'] },
+                    { num: 7, title: 'Строение вещества', types: ['par'] },
+                    { num: 8, title: 'Молекулы', types: ['par'] },
+                    { num: 9, title: 'Броуновское движение', types: ['par', 'zad'] },
+                    { num: 10, title: 'Диффузия в газах, жидкостях и твёрдых телах', types: ['par', 'zad'] },
+                    { num: 11, title: 'Взаимное притяжение и отталкивание молекул', types: ['par', 'zad'] },
+                    { num: 12, title: 'Агрегатные состояния вещества', types: ['par'] },
+                    { num: 13, title: 'Различие в молекулярном строении твёрдых тел, жидкостей и газов', types: ['par', 'zad', 'ps'] },
+                    { num: 14, title: 'Механическое движение', types: ['par', 'upr', 'zad'] },
+                    { num: 15, title: 'Равномерное и неравномерное движение', types: ['par', 'zad'] },
+                    { num: 16, title: 'Скорость. Единицы скорости', types: ['par', 'upr'] },
+                    { num: 17, title: 'Расчёт пути и времени движения', types: ['par', 'upr', 'zad'] },
+                    { num: 18, title: 'Инерция', types: ['par', 'upr', 'zad'] },
+                    { num: 19, title: 'Взаимодействие тел', types: ['par'] },
+                    { num: 20, title: 'Масса тела. Единицы массы', types: ['par', 'upr'] },
+                    { num: 21, title: 'Измерение массы тела на весах', types: ['par', 'zad'] },
+                    { num: 22, title: 'Плотность вещества', types: ['par', 'upr', 'zad'] },
+                    { num: 23, title: 'Расчёт массы и объёма тела по его плотности', types: ['par', 'upr', 'zad'] },
+                    { num: 24, title: 'Сила', types: ['par', 'upr'] },
+                    { num: 25, title: 'Явление тяготения. Сила тяжести', types: ['par'] },
+                    { num: 26, title: 'Сила упругости. Закон Гука', types: ['par'] },
+                    { num: 27, title: 'Вес тела', types: ['par'] },
+                    { num: 28, title: 'Единицы силы. Связь между силой тяжести и массой тела', types: ['par', 'upr'] },
+                    { num: 29, title: 'Сила тяжести на других планетах. Физические характеристики планет', types: ['par'] },
+                    { num: 30, title: 'Динамометр', types: ['par', 'upr'] },
+                    { num: 31, title: 'Сложение двух сил, направленных по одной прямой. Равнодействующая сил', types: ['par', 'upr'] },
+                    { num: 32, title: 'Сила трения', types: ['par', 'upr'] },
+                    { num: 33, title: 'Трение покоя', types: ['par'] },
+                    { num: 34, title: 'Трение в природе и технике', types: ['par', 'ps'] },
+                    { num: 35, title: 'Давление. Единицы давления', types: ['par', 'upr', 'zad'] },
+                    { num: 36, title: 'Способы уменьшения и увеличения давления', types: ['par', 'upr', 'zad'] },
+                    { num: 37, title: 'Давление газа', types: ['par', 'zad'] },
+                    { num: 38, title: 'Передача давления жидкостями и газами. Закон Паскаля', types: ['par', 'upr', 'zad'] },
+                    { num: 39, title: 'Давление в жидкости и газе', types: ['par'] },
+                    { num: 40, title: 'Расчёт давления жидкости на дно и стенки сосуда', types: ['par', 'upr', 'zad'] },
+                    { num: 41, title: 'Сообщающиеся сосуды', types: ['par', 'upr', 'zad'] },
+                    { num: 42, title: 'Вес воздуха. Атмосферное давление', types: ['par', 'upr', 'zad'] },
+                    { num: 43, title: 'Почему существует воздушная оболочка Земли', types: ['par', 'upr'] },
+                    { num: 44, title: 'Измерение атмосферного давления. Опыт Торричелли', types: ['par', 'upr', 'zad'] },
+                    { num: 45, title: 'Барометр-анероид', types: ['par', 'upr'] },
+                    { num: 46, title: 'Атмосферное давление на различных высотах', types: ['par', 'upr', 'zad'] },
+                    { num: 47, title: 'Манометры', types: ['par'] },
+                    { num: 48, title: 'Поршневой жидкостный насос', types: ['par', 'upr'] },
+                    { num: 49, title: 'Гидравлический пресс', types: ['par', 'upr', 'zad'] },
+                    { num: 50, title: 'Действие жидкости и газа на погружённое в них тело', types: ['par'] },
+                    { num: 51, title: 'Архимедова сила', types: ['par', 'upr'] },
+                    { num: 52, title: 'Плавание тел', types: ['par', 'upr', 'zad'] },
+                    { num: 53, title: 'Плавание судов', types: ['par', 'upr', 'zad'] },
+                    { num: 54, title: 'Воздухоплавание', types: ['par', 'upr', 'ps'] },
+                    { num: 55, title: 'Механическая работа. Единицы работы', types: ['par', 'upr', 'zad'] },
+                    { num: 56, title: 'Мощность. Единицы мощности', types: ['par', 'upr', 'zad'] },
+                    { num: 57, title: 'Простые механизмы', types: ['par'] },
+                    { num: 58, title: 'Рычаг. Равновесие сил на рычаге', types: ['par'] },
+                    { num: 59, title: 'Момент силы', types: ['par'] },
+                    { num: 60, title: 'Рычаги в технике, быту и природе', types: ['par', 'upr'] },
+                    { num: 61, title: 'Применение закона равновесия рычага к блоку', types: ['par'] },
+                    { num: 62, title: 'Равенство работ при использовании простых механизмов. «Золотое правило» механики', types: ['par', 'upr', 'zad'] },
+                    { num: 63, title: 'Центр тяжести тела', types: ['par', 'zad'] },
+                    { num: 64, title: 'Условия равновесия тел', types: ['par'] },
+                    { num: 65, title: 'Коэффициент полезного действия механизма', types: ['par'] },
+                    { num: 66, title: 'Энергия', types: ['par'] },
+                    { num: 67, title: 'Потенциальная и кинетическая энергия', types: ['par', 'upr'] },
+                    { num: 68, title: 'Превращение одного вида механической энергии в другой', types: ['par', 'upr', 'ps'] }
+                ],
+                labs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+            }
+        };
+        const bookMetadata = {
+            'algebra': {
+                authors: 'Ю.Н. Макарычев, Н.Г. Миндюк, К.И. Нешков, С.Б. Суворова',
+                type: 'Учебник',
+                year: '2023',
+                parts: '1'
+            },
+            'geometry': {
+                authors: 'А.Г. Мерзляк, В.Б. Полонский, М.С. Якир',
+                type: 'Учебник',
+                year: '2023',
+                parts: '1'
+            },
+            'russian': {
+                authors: 'М.Т. Баранов, Т.А. Ладыженская, Л.А. Тростенцова, Л.Т. Григорян, И.И. Кулибаба',
+                type: 'Учебник',
+                year: '2023',
+                parts: '1, 2'
+            },
+            'history': {
+                authors: 'Приваловский А. Н.',
+                type: 'Контурные карты',
+                year: '2023',
+                parts: '1'
+            },
+            'english': {
+                authors: 'М.В. Вербицкая, О.В. Афанасьева, И.В. Михеева',
+                type: 'Рабочая тетрадь',
+                year: '2017',
+                parts: '1'
+            },
+            'physics': {
+                authors: 'А.В. Перышкин',
+                type: 'Учебник',
+                year: '2023',
+                parts: '1'
+            }
+        };
+
+        const subjectNames = {
+            'algebra': 'Алгебра',
+            'geometry': 'Геометрия',
+            'russian': 'Русский язык',
+            'history': 'История (контурные карты)',
+            'english': 'Английский язык',
+            'physics': 'Физика'
+        };
+
+        let currentSubject = '';
+        let currentExercise = 1;
+        let currentVariant = 1;
+        let currentPhysicsType = '';
+        let currentZoom = 1;
+        let panX = 0;
+        let panY = 0;
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let panStartX = 0;
+        let panStartY = 0;
+
+        // Навигация
+        function showMain() {
+            document.querySelectorAll('.content-section, .solution-page').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-view').classList.add('active');
+            hideZoomControls();
+            window.scrollTo(0, 0);
+        }
+
+        function showClassView() {
+            document.querySelectorAll('.content-section, .solution-page').forEach(s => s.classList.remove('active'));
+            document.getElementById('class-view').classList.add('active');
+            hideZoomControls();
+            window.scrollTo(0, 0);
+        }
+
+        function openSubject(subject) {
+            currentSubject = subject;
+            currentExercise = 1;
+            currentVariant = 1;
+            currentZoom = 1;
+
+            document.querySelectorAll('.content-section, .solution-page').forEach(s => s.classList.remove('active'));
+            document.getElementById('class-view').classList.add('active');
+            // Показать обложку и метаданные
+            const coverSection = document.getElementById('book-cover-section');
+            const coverImg = document.getElementById('book-cover-img');
+            const coverTitle = document.getElementById('cover-title');
+            const coverSubtitle = document.getElementById('cover-subtitle');
+            const metaAuthors = document.getElementById('meta-authors');
+            const metaType = document.getElementById('meta-type');
+            const metaYear = document.getElementById('meta-year');
+            const metaParts = document.getElementById('meta-parts');
+            const bookMeta = document.getElementById('book-meta');
+
+            if (bookCovers[subject]) {
+                coverSection.style.display = 'flex';
+                coverImg.src = bookCovers[subject];
+                coverImg.onerror = () => { coverSection.style.display = 'none'; };
+                coverTitle.textContent = subjectNames[subject];
+                coverSubtitle.textContent = '7 класс';
+            } else {
+                coverSection.style.display = 'none';
+            }
+
+            // Заполнить метаданные
+            if (bookMetadata[subject]) {
+                const meta = bookMetadata[subject];
+                metaAuthors.textContent = meta.authors;
+                metaType.textContent = meta.type;
+                metaYear.textContent = meta.year;
+                metaParts.textContent = meta.parts;
+                bookMeta.style.display = 'flex';
+            } else {
+                bookMeta.style.display = 'none';
+            }
+
+            const config = bookConfigs[subject];
+            
+            if (config.isPhysics) {
+                document.getElementById('book-parts-container').style.display = 'none';
+                document.getElementById('physics-container').style.display = 'block';
+                updatePhysicsView();
+            } else {
+                document.getElementById('book-parts-container').style.display = 'block';
+                document.getElementById('physics-container').style.display = 'none';
+                updateClassView();
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        function updateClassView() {
+            const config = bookConfigs[currentSubject];
+
+            document.getElementById('class-title').innerHTML = 
+                `<i class="fas ${getSubjectIcon(currentSubject)}" style="margin-right: 0.5rem;"></i>${subjectNames[currentSubject]}`;
+
+            const subtitle = document.getElementById('class-subtitle');
+            if (config.isHistory) {
+                subtitle.textContent = 'Нажми на страницу чтобы открыть решение';
+            } else {
+                subtitle.textContent = 'Нажми на номер задания чтобы открыть решение';
+            }
+
+            const container = document.getElementById('book-parts-container');
+            container.innerHTML = '';
+
+            if (config.parts) {
+                config.parts.forEach(part => {
+                    const partSection = document.createElement('div');
+                    partSection.className = 'book-part-section';
+
+                    const title = document.createElement('div');
+                    title.className = 'book-part-title glass';
+                    title.textContent = part.name;
+                    partSection.appendChild(title);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'exercise-grid';
+
+                    for (let i = part.start; i <= part.end; i++) {
+                        const btn = document.createElement('button');
+                        btn.className = 'exercise-btn glass';
+                        btn.textContent = i;
+                        btn.onclick = function() {
+                            openSolution(i);
+                        };
+                        grid.appendChild(btn);
+                    }
+
+                    partSection.appendChild(grid);
+                    container.appendChild(partSection);
+                });
+            } else if (config.isHistory) {
+                // История КК — страницы со 2 по 16 (1-й страницы нет)
+                const grid = document.createElement('div');
+                grid.className = 'exercise-grid';
+                
+                for (let i = 2; i <= config.maxNum; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'exercise-btn glass';
+                    btn.innerHTML = `<span style="font-size: 0.75rem; opacity: 0.7;">стр.</span>${i}`;
+                    btn.onclick = function() {
+                        openSolution(i);
+                    };
+                    grid.appendChild(btn);
+                }
+                container.appendChild(grid);
+            } else {
+                const grid = document.createElement('div');
+                grid.className = 'exercise-grid';
+                grid.id = 'exercise-grid';
+
+                for (let i = 1; i <= config.maxNum; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'exercise-btn glass';
+                    btn.textContent = i;
+                    btn.onclick = function() {
+                        openSolution(i);
+                    };
+                    grid.appendChild(btn);
+                }
+
+                container.appendChild(grid);
+            }
+        }
+
+        function updatePhysicsView() {
+            const config = bookConfigs['physics'];
+            
+            document.getElementById('class-title').innerHTML = 
+                `<i class="fas fa-atom" style="margin-right: 0.5rem; color: #1abc9c;"></i>${subjectNames['physics']}`;
+            document.getElementById('class-subtitle').textContent = 'Нажми на номер чтобы открыть решение';
+
+            // Лабораторные работы
+            const labGrid = document.getElementById('lab-grid');
+            labGrid.innerHTML = '';
+            config.labs.forEach(labNum => {
+                const btn = document.createElement('button');
+                btn.className = 'lab-btn glass';
+                btn.innerHTML = `<i class="fas fa-flask"></i><span>№${labNum}</span>`;
+                btn.onclick = () => openPhysicsSolution('lab', labNum, `Лабораторная работа ${labNum}`);
+                labGrid.appendChild(btn);
+            });
+
+            // Параграфы
+            const paragraphsContainer = document.getElementById('paragraphs-container');
+            paragraphsContainer.innerHTML = '';
+
+            config.paragraphs.forEach(par => {
+                const card = document.createElement('div');
+                card.className = 'paragraph-card glass';
+
+                const header = document.createElement('div');
+                header.className = 'paragraph-header';
+
+                const title = document.createElement('div');
+                title.className = 'paragraph-title';
+                title.textContent = `§${par.num} ${par.title}`;
+
+                header.appendChild(title);
+                card.appendChild(header);
+
+                const buttons = document.createElement('div');
+                buttons.className = 'paragraph-buttons';
+
+                par.types.forEach(type => {
+                    const btn = document.createElement('button');
+                    btn.className = 'paragraph-btn';
+                    
+                    let typeName, typeClass;
+                    switch(type) {
+                        case 'par':
+                            typeName = 'Вопросы';
+                            typeClass = '';
+                            break;
+                        case 'zad':
+                            typeName = 'Задание';
+                            typeClass = 'zadanie';
+                            break;
+                        case 'upr':
+                            typeName = 'Упражнение';
+                            typeClass = 'upr';
+                            break;
+                        case 'ps':
+                            typeName = 'Проверь себя';
+                            typeClass = 'ps';
+                            break;
+                    }
+                    
+                    btn.textContent = typeName;
+                    if (typeClass) btn.classList.add(typeClass);
+                    
+                    btn.onclick = () => openPhysicsSolution(type, par.num, `§${par.num} — ${typeName}`);
+                    buttons.appendChild(btn);
+                });
+
+                card.appendChild(buttons);
+                paragraphsContainer.appendChild(card);
+            });
+        }
+
+        function getSubjectIcon(subject) {
+            const icons = {
+                'algebra': 'fa-square-root-alt',
+                'geometry': 'fa-shapes',
+                'russian': 'fa-language',
+                'history': 'fa-landmark',
+                'english': 'fa-globe',
+                'physics': 'fa-atom'
+            };
+            return icons[subject] || 'fa-book';
+        }
+
+        function openSolution(exerciseNum) {
+            currentExercise = exerciseNum;
+            currentVariant = 1;
+            currentZoom = 1;
+
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('solution-view').classList.add('active');
+
+            document.getElementById('solution-subject').textContent = subjectNames[currentSubject];
+            document.getElementById('solution-number').textContent = exerciseNum;
+            
+
+            const config = bookConfigs[currentSubject];
+            const variantSelector = document.getElementById('variant-selector');
+            if (config && config.variants) {
+                variantSelector.style.display = 'block';
+                updateVariantButtons();
+            } else {
+                variantSelector.style.display = 'none';
+            }
+
+            showZoomControls();
+            loadSolutionImage();
+
+            window.scrollTo(0, 0);
+
+            // Обновить шкалу номеров (кроме истории и физики)
+            const timelineConfig = bookConfigs[currentSubject];
+            if (timelineConfig && !timelineConfig.isHistory && !timelineConfig.isPhysics) {
+                updateNumberTimeline(exerciseNum);
+                document.querySelector('.number-timeline-wrapper').style.display = 'block';
+            } else {
+                document.querySelector('.number-timeline-wrapper').style.display = 'none';
+            }
+        }
+
+        function openPhysicsSolution(type, num, title) {
+            currentPhysicsType = type;
+            currentExercise = num;
+            currentZoom = 1;
+
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('solution-view').classList.add('active');
+
+            document.getElementById('solution-subject').textContent = 'Физика';
+            document.getElementById('solution-number').textContent = title;
+            document.getElementById('variant-selector').style.display = 'none';
+
+            showZoomControls();
+            loadPhysicsImage(type, num);
+
+            window.scrollTo(0, 0);
+        }
+
+        function loadSolutionImage() {
+            const img = document.getElementById('solution-image');
+            const loading = document.getElementById('solution-loading');
+            const error = document.getElementById('solution-error');
+            const config = bookConfigs[currentSubject];
+
+            img.style.display = 'none';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+
+            currentZoom = 1;
+            updateZoom();
+
+            img.classList.remove('small-image', 'large-image');
+            if (config && config.smallImage) {
+                img.classList.add('small-image');
+            } else if (config && config.largeImage) {
+                img.classList.add('large-image');
+            }
+
+            const imageUrl = buildImageUrl(currentExercise, currentVariant);
+
+            img.onload = function() {
+                loading.style.display = 'none';
+                img.style.display = 'block';
+            };
+
+            img.onerror = function() {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+            };
+
+            img.src = imageUrl;
+        }
+
+        function loadPhysicsImage(type, num) {
+            const img = document.getElementById('solution-image');
+            const loading = document.getElementById('solution-loading');
+            const error = document.getElementById('solution-error');
+
+            img.style.display = 'none';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+
+            currentZoom = 1;
+            updateZoom();
+
+            img.classList.remove('small-image', 'large-image');
+            img.classList.add('large-image');
+
+            const imageUrl = `https://reshak.ru/reshebniki/fizika/7/perishkin/images1/${type}/${num}.png`;
+
+            img.onload = function() {
+                loading.style.display = 'none';
+                img.style.display = 'block';
+            };
+
+            img.onerror = function() {
+                loading.style.display = 'none';
+                error.style.display = 'block';
+            };
+
+            img.src = imageUrl;
+        }
+
+        function buildImageUrl(exerciseNum, variant = 1) {
+            const config = bookConfigs[currentSubject];
+            if (!config) return '#';
+
+            let format = config.format;
+
+            if (config.variants) {
+                format = format.replace('{num}', exerciseNum).replace('{variant}', variant);
+            } else {
+                format = format.replace('{num}', exerciseNum);
+            }
+
+            return config.baseUrl + format;
+        }
+
+        function switchVariant(variant) {
+            currentVariant = variant;
+            updateVariantButtons();
+            loadSolutionImage();
+            updateNumberTimeline(currentExercise);
+        }
+
+        function updateVariantButtons() {
+            document.querySelectorAll('.variant-btn').forEach((btn, index) => {
+                if (index + 1 === currentVariant) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+function prevExercise() {
+    if (currentSubject === 'physics') {
+        showClassView();
+        return;
+    }
+    
+    if (currentExercise > 1) {
+        openSolution(currentExercise - 1);
+    }
+}
+
+function nextExercise() {
+    if (currentSubject === 'physics') {
+        showClassView();
+        return;
+    }
+    
+    const config = bookConfigs[currentSubject];
+    const maxNum = config?.maxNum || 50;
+    if (currentExercise < maxNum) {
+        openSolution(currentExercise + 1);
+    }
+}
+
+        // Zoom functions
+        function showZoomControls() {
+            document.getElementById('zoom-controls').style.display = 'flex';
+        }
+
+        function hideZoomControls() {
+            document.getElementById('zoom-controls').style.display = 'none';
+        }
+
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom + 0.25, 3);
+            updateZoom();
+        }
+
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom - 0.25, 0.5);
+            updateZoom();
+        }
+
+        function zoomReset() {
+    currentZoom = 1;
+    panX = 0;
+    panY = 0;
+    updateZoom();
+}
+
+function updateZoom() {
+    const img = document.getElementById('solution-image');
+    if (img) {
+        img.style.transform = `scale(${currentZoom}) translate(${panX}px, ${panY}px)`;
+    }
+}
+
+// Pan / Drag
+// Pan / Drag — long press to grab
+// Pan / Drag
+function initPanDrag() {
+    const wrapper = document.getElementById('solution-image-wrapper');
+    if (!wrapper) return;
+    
+    function startDrag(x, y) {
+        if (currentZoom <= 1) return;
+        isDragging = true;
+        dragStartX = x;
+        dragStartY = y;
+        panStartX = panX;
+        panStartY = panY;
+        wrapper.style.cursor = 'grabbing';
+    }
+    
+    function endDrag() {
+        isDragging = false;
+        wrapper.style.cursor = 'grab';
+    }
+    
+    wrapper.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    startDrag(e.clientX, e.clientY);
+});
+    
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const dx = (e.clientX - dragStartX) / currentZoom;
+        const dy = (e.clientY - dragStartY) / currentZoom;
+        panX = panStartX + dx;
+        panY = panStartY + dy;
+        updateZoom();
+    });
+    
+    window.addEventListener('mouseup', endDrag);
+    
+    // Touch
+wrapper.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+}, { passive: false });
+    
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        const dx = (touch.clientX - dragStartX) / currentZoom;
+        const dy = (touch.clientY - dragStartY) / currentZoom;
+        panX = panStartX + dx;
+        panY = panStartY + dy;
+        updateZoom();
+    }, { passive: false });
+    
+    window.addEventListener('touchend', endDrag);
+}
+
+        // Настройки
+        function openSettings() {
+            document.getElementById('settings-modal').classList.add('active');
+        }
+
+        function closeSettings(event) {
+            if (!event || event.target.id === 'settings-modal') {
+                document.getElementById('settings-modal').classList.remove('active');
+            }
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            document.getElementById('theme-switch').classList.toggle('active');
+            localStorage.setItem('dark-theme', document.body.classList.contains('dark-theme'));
+        }
+
+        // Загрузка темы при старте
+        window.addEventListener('DOMContentLoaded', () => {
+            const isDark = localStorage.getItem('dark-theme') === 'true';
+            if (isDark) {
+                document.body.classList.add('dark-theme');
+                document.getElementById('theme-switch').classList.add('active');
+            }
+                initPanDrag();
+        });
+        function updateNumberTimeline(currentNum) {
+    const timeline = document.getElementById('number-timeline');
+    if (!timeline) return;
+    
+    timeline.innerHTML = '';
+    const num = parseInt(currentNum);
+    const start = Math.max(1, num - 5); 
+    const end = num + 5; 
+
+    for (let i = start; i <= end; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'timeline-item glass'; 
+        if (i === num) btn.classList.add('active');
+        btn.innerText = i;
+        
+        // ВАЖНО: вызываем openSolution, а не showSolution или loadExercise
+        btn.onclick = () => {
+            openSolution(i); 
+        };
+        
+        timeline.appendChild(btn);
+    }
+}
+    </script>
+</body>
+</html>
