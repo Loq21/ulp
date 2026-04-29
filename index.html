@@ -615,12 +615,6 @@
         body.dark-theme .number-timeline-wrapper { background: rgba(255,255,255,0.05); }
         body.dark-theme .class-info h2 { color: #f0f0f0; }
         body.dark-theme .collab-code-display { color: #1abc9c; background: rgba(26,188,156,0.15); }
-body.dark-theme .logo,
-body.dark-theme .logo-text span {
-    color: #f0f0f0 !important;
-    background: none !important;
-    -webkit-text-fill-color: #f0f0f0 !important;
-}
         body.dark-theme .collab-modal-text { color: #bbb; }
         
         /* Textbooks */
@@ -743,9 +737,6 @@ body.dark-theme .site-footer {
     background: rgba(255, 255, 255, 0.95);
     padding: 2.5rem;
     border-radius: 30px;
-    width: 400px;
-    min-width: 320px;
-    max-width: 90vw;
     transform: scale(0.8) translateY(-20px);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -1152,6 +1143,7 @@ header {
         <div class="settings-content" onclick="event.stopPropagation()">
             <div class="settings-header"><h3>Настройки</h3><button class="close-settings" onclick="closeSettings()"><i class="fas fa-times"></i></button></div>
             <div class="settings-item"><span>Темная тема</span><div class="theme-switch" id="theme-switch" onclick="toggleTheme()"></div></div>
+            <div class="settings-item"><span>Звуки</span><div class="theme-switch" id="sound-switch" onclick="toggleSounds()"></div></div>
             <div class="settings-item"><span>Версия</span><span style="color: #888;">3.8.0</span></div>
         </div>
     </div>
@@ -3173,10 +3165,10 @@ function editorClear() {
         };
 
         const textbooksData = [
-            { id: 'informatika', name: 'Информатика', author: 'Босова', file: 'informatika_7kl_bosova.pdf', icon: 'fa-laptop-code', color: '#3498db', cover: 'https://gdz.top/media/informatika_07/bosova-u23/covers/cover1.webp' },
-            { id: 'fizika', name: 'Физика', author: 'Перышкин', file: 'fizika_7kl_peryshkin.pdf', icon: 'fa-atom', color: '#1abc9c', cover: 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368' },
-            { id: 'algebra', name: 'Алгебра', author: 'Макарычев', file: '7_klass_makarychev_2024.pdf', icon: 'fa-square-root-alt', color: '#777', cover: 'https://gdz.top/media/algebra_07/makarychev-fgos/covers/cover1.webp' },
-            { id: 'istoriya', name: 'История России', author: 'Мединский', file: 'istorija_rosii_7_uchebnik_medinskij.pdf', icon: 'fa-landmark', color: '#e74c3c', cover: 'https://imgs.euroki.org/system/books/covers/000/010/934/mid/Screenshot_2025-11-14_at_13.02.15.png?1763115135' }
+            { id: 'informatika', name: 'Информатика', author: 'Босова', file: 'https://drive.google.com/file/d/1k9Q8MQKqnyGiCuQeZILcKLE_yMqFPGrk/view?usp=sharing', icon: 'fa-laptop-code', color: '#3498db', cover: 'https://gdz.top/media/informatika_07/bosova-u23/covers/cover1.webp' },
+            { id: 'fizika', name: 'Физика', author: 'Перышкин', file: 'https://drive.google.com/file/d/1POsPMxtmloGxTZNG4a_gqB1g42julscq/view?usp=sharing', icon: 'fa-atom', color: '#1abc9c', cover: 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368' },
+            { id: 'algebra', name: 'Алгебра', author: 'Макарычев', file: 'https://drive.google.com/file/d/1fESsp3Va8b22211-J5qTgcHK2BrbS2D1/view?usp=sharing', icon: 'fa-square-root-alt', color: '#777', cover: 'https://gdz.top/media/algebra_07/makarychev-fgos/covers/cover1.webp' },
+            { id: 'istoriya', name: 'История России', author: 'Мединский', file: 'https://drive.google.com/file/d/11mNna5wGsQBYeULGBPrcf5X0Zp8V2bgB/view?usp=sharing', icon: 'fa-landmark', color: '#e74c3c', cover: 'https://imgs.euroki.org/system/books/covers/000/010/934/mid/Screenshot_2025-11-14_at_13.02.15.png?1763115135' }
         ];
 
         const bookConfigs = {
@@ -3218,6 +3210,7 @@ function editorClear() {
                 document.body.classList.add('dark-theme');
                 document.getElementById('theme-switch').classList.add('active');
             }
+            initSoundToggle();
             initPanDrag();
         });
         // Функция для воспроизведения звука
@@ -3239,10 +3232,29 @@ function playSound(id) {
     }
 }
 
+// Sound toggle state
+let soundsEnabled = localStorage.getItem('ulp-sounds-enabled') !== 'false';
+
+function toggleSounds() {
+    soundsEnabled = !soundsEnabled;
+    localStorage.setItem('ulp-sounds-enabled', soundsEnabled);
+    document.getElementById('sound-switch').classList.toggle('active', soundsEnabled);
+    showNotification(soundsEnabled ? 'Звуки включены' : 'Звуки выключены', 'info');
+}
+
+function initSoundToggle() {
+    const saved = localStorage.getItem('ulp-sounds-enabled');
+    soundsEnabled = saved !== 'false';
+    const switchEl = document.getElementById('sound-switch');
+    if (switchEl) {
+        switchEl.classList.toggle('active', soundsEnabled);
+    }
+}
+
 // Функции-вызовы
-function playHomeClick() { playSound('homeClickSound'); }
-function playBackClick() { playSound('backClickSound'); }
-function playNotification() { playSound('notificationSound'); }
+function playHomeClick() { if (soundsEnabled) playSound('homeClickSound'); }
+function playBackClick() { if (soundsEnabled) playSound('backClickSound'); }
+function playNotification() { if (soundsEnabled) playSound('notificationSound'); }
 
 // Слушатель для всех кнопок (включая динамические номера)
 // Слушатель для всех кнопок (включая динамические номера)
