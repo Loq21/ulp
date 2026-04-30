@@ -1147,6 +1147,7 @@ header {
             <div class="settings-header"><h3>Настройки</h3><button class="close-settings" onclick="closeSettings()"><i class="fas fa-times"></i></button></div>
             <div class="settings-item"><span>Темная тема</span><div class="theme-switch" id="theme-switch" onclick="toggleTheme()"></div></div>
             <div class="settings-item"><span>Звуки</span><div class="theme-switch" id="sound-switch" onclick="toggleSounds()"></div></div>
+            <div class="settings-item"><span>Скрыть водяные знаки</span><div class="theme-switch" id="watermark-switch" onclick="toggleWatermark()"></div></div>
             <div class="settings-item"><span>Версия</span><span style="color: #888;">3.8.0</span></div>
         </div>
     </div>
@@ -2928,7 +2929,86 @@ function editorClear() {
             window.scrollTo(0, 0);
         }
 
-        function loadSolutionImage() {
+        // Canvas watermark removal
+function processSolutionImage() {
+    const img = document.getElementById('solution-image');
+    if (!img || !img.src || img.src === '' || !watermarkEnabled) return;
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = img.naturalWidth || img.width;
+    canvas.height = img.naturalHeight || img.height;
+
+    if (canvas.width === 0 || canvas.height === 0) return;
+
+    ctx.drawImage(img, 0, 0);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    // Watermark color detection: dark gray pixels (pomogalka.me is dark gray/black)
+    // Replace dark gray pixels with white if they are isolated (part of text)
+    for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3];
+
+        // Detect dark gray/black text pixels (watermark)
+        // pomogalka.me uses dark gray, not pure black
+        const brightness = (r + g + b) / 3;
+        const isDark = brightness < 120 && a > 100;
+        const isGray = Math.abs(r - g) < 30 && Math.abs(g - b) < 30 && Math.abs(r - b) < 30;
+
+        // Check if pixel is part of thin text (watermark) vs thick content
+        // Watermark text is thin, so we check neighbors
+        if (isDark && isGray) {
+            // Check surrounding pixels to confirm it's isolated text, not part of main content
+            const x = (i / 4) % canvas.width;
+            const y = Math.floor((i / 4) / canvas.width);
+
+            // Sample a small area around the pixel
+            let darkNeighbors = 0;
+            let totalNeighbors = 0;
+            const sampleRadius = 2;
+
+            for (let dy = -sampleRadius; dy <= sampleRadius; dy++) {
+                for (let dx = -sampleRadius; dx <= sampleRadius; dx++) {
+                    const nx = x + dx;
+                    const ny = y + dy;
+                    if (nx >= 0 && nx < canvas.width && ny >= 0 && ny < canvas.height) {
+                        const ni = (ny * canvas.width + nx) * 4;
+                        const nb = (data[ni] + data[ni + 1] + data[ni + 2]) / 3;
+                        if (nb < 120) darkNeighbors++;
+                        totalNeighbors++;
+                    }
+                }
+            }
+
+            // If pixel is part of sparse dark area (thin text), likely watermark
+            const darkRatio = darkNeighbors / totalNeighbors;
+            if (darkRatio < 0.4) {
+                data[i] = 255;
+                data[i + 1] = 255;
+                data[i + 2] = 255;
+            }
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    // Draw @ulp watermark in corner
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(100, 100, 100, 0.3)';
+    ctx.textAlign = 'right';
+    ctx.fillText('@ulp', canvas.width - 15, canvas.height - 15);
+
+    // Update image source
+    img.src = canvas.toDataURL('image/png');
+}
+
+function loadSolutionImage() {
             const img = document.getElementById('solution-image');
             const loading = document.getElementById('solution-loading');
             const error = document.getElementById('solution-error');
@@ -2951,6 +3031,9 @@ function editorClear() {
                 loading.style.display = 'none'; 
                 img.style.display = 'block'; 
                 requestAnimationFrame(() => img.classList.add('loaded'));
+                if (watermarkEnabled) {
+                    setTimeout(() => processSolutionImage(), 100);
+                }
             };
             img.onerror = () => { loading.style.display = 'none'; error.style.display = 'block'; };
             img.src = imageUrl;
@@ -3001,6 +3084,9 @@ function editorClear() {
                 loading.style.display = 'none'; 
                 img.style.display = 'block'; 
                 requestAnimationFrame(() => img.classList.add('loaded'));
+                if (watermarkEnabled) {
+                    setTimeout(() => processSolutionImage(), 100);
+                }
             };
             img.onerror = () => { loading.style.display = 'none'; error.style.display = 'block'; };
             img.src = imageUrl;
@@ -3164,14 +3250,16 @@ function editorClear() {
             'russian': 'https://gdz.top/media/russian_07/ladygensk-uch23/covers/cover1.webp',
             'history': 'https://gdz.top/media/istoriya_07/torop-kk23/covers/cover1.webp',
             'english': 'https://gdz.top/media/english_07/verbickaja-rt17/covers/cover1.webp',
-            'physics': 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368'
+            'physics': 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368',
+            'biologya': 'https://gdz.top/media/biologiya_07/pasechnik-u23/covers/cover1.webp'
         };
 
         const textbooksData = [
             { id: 'informatika', name: 'Информатика', author: 'Босова', file: 'https://drive.google.com/file/d/1k9Q8MQKqnyGiCuQeZILcKLE_yMqFPGrk/view?usp=sharing', icon: 'fa-laptop-code', color: '#3498db', cover: 'https://gdz.top/media/informatika_07/bosova-u23/covers/cover1.webp' },
             { id: 'fizika', name: 'Физика', author: 'Перышкин', file: 'https://drive.google.com/file/d/1POsPMxtmloGxTZNG4a_gqB1g42julscq/view?usp=sharing', icon: 'fa-atom', color: '#1abc9c', cover: 'https://imgs.euroki.org/system/books/covers/000/005/910/mid/Screenshot_2022-07-18_at_15.45.55.png?1658148368' },
             { id: 'algebra', name: 'Алгебра', author: 'Макарычев', file: 'https://drive.google.com/file/d/1fESsp3Va8b22211-J5qTgcHK2BrbS2D1/view?usp=sharing', icon: 'fa-square-root-alt', color: '#777', cover: 'https://gdz.top/media/algebra_07/makarychev-fgos/covers/cover1.webp' },
-            { id: 'istoriya', name: 'История России', author: 'Мединский', file: 'https://drive.google.com/file/d/11mNna5wGsQBYeULGBPrcf5X0Zp8V2bgB/view?usp=sharing', icon: 'fa-landmark', color: '#e74c3c', cover: 'https://imgs.euroki.org/system/books/covers/000/010/934/mid/Screenshot_2025-11-14_at_13.02.15.png?1763115135' }
+            { id: 'istoriya', name: 'История России', author: 'Мединский', file: 'https://drive.google.com/file/d/11mNna5wGsQBYeULGBPrcf5X0Zp8V2bgB/view?usp=sharing', icon: 'fa-landmark', color: '#e74c3c', cover: 'https://imgs.euroki.org/system/books/covers/000/010/934/mid/Screenshot_2025-11-14_at_13.02.15.png?1763115135' },
+            { id: 'biologya', name: 'Биология', author: 'Пасечник', file: 'https://drive.google.com/file/d/1IZaT38yIeL-rIhXuuAsr1bkXWF9C9dDm/view?usp=sharing', icon: 'fa-landmark', color: '#e74c3c', cover: 'https://gdz.top/media/biologiya_07/pasechnik-u23/covers/cover1.webp' },
         ];
 
         const bookConfigs = {
@@ -3180,7 +3268,8 @@ function editorClear() {
             'russian': { baseUrl: 'https://pomogalka.me/img/7-klass-ladyzhenskaya-2023/', format: '{num}.png', maxNum: 644, variants: false, smallImage: true, parts: [{ name: 'Часть 1', start: 1, end: 390 }, { name: 'Часть 2', start: 391, end: 644 }] },
             'history': { baseUrl: 'https://gdz.top/media/istoriya_07/torop-kk23/1-01/', format: '{num}-1.webp', maxNum: 16, variants: false, smallImage: true, isHistory: true, startPage: 2 },
             'english': { baseUrl: 'https://gdz.top/media/english_07/verbickaja-rt17/1-14/', format: '{num}-{variant}.webp', maxNum: 150, variants: true, maxVariant: 3, smallImage: true },
-            'physics': { baseUrl: 'https://reshak.ru/reshebniki/fizika/7/perishkin/images1/', format: '{type}/{num}.png', maxNum: 68, variants: false, smallImage: false, largeImage: true, isPhysics: true, paragraphs: [{num:1,title:'Что изучает физика',types:['par','zad']},{num:2,title:'Некоторые физические термины',types:['par']},{num:3,title:'Наблюдения и опыты',types:['par']},{num:4,title:'Физические величины. Измерение физических величин',types:['par','upr','zad']},{num:5,title:'Точность и погрешность измерений',types:['par','zad']},{num:6,title:'Физика и техника',types:['par','ps']},{num:7,title:'Строение вещества',types:['par']},{num:8,title:'Молекулы',types:['par']},{num:9,title:'Броуновское движение',types:['par','zad']},{num:10,title:'Диффузия в газах, жидкостях и твёрдых телах',types:['par','zad']},{num:11,title:'Взаимное притяжение и отталкивание молекул',types:['par','zad']},{num:12,title:'Агрегатные состояния вещества',types:['par']},{num:13,title:'Различие в молекулярном строении твёрдых тел, жидкостей и газов',types:['par','zad','ps']},{num:14,title:'Механическое движение',types:['par','upr','zad']},{num:15,title:'Равномерное и неравномерное движение',types:['par','zad']},{num:16,title:'Скорость. Единицы скорости',types:['par','upr']},{num:17,title:'Расчёт пути и времени движения',types:['par','upr','zad']},{num:18,title:'Инерция',types:['par','upr','zad']},{num:19,title:'Взаимодействие тел',types:['par']},{num:20,title:'Масса тела. Единицы массы',types:['par','upr']},{num:21,title:'Измерение массы тела на весах',types:['par','zad']},{num:22,title:'Плотность вещества',types:['par','upr','zad']},{num:23,title:'Расчёт массы и объёма тела по его плотности',types:['par','upr','zad']},{num:24,title:'Сила',types:['par','upr']},{num:25,title:'Явление тяготения. Сила тяжести',types:['par']},{num:26,title:'Сила упругости. Закон Гука',types:['par']},{num:27,title:'Вес тела',types:['par']},{num:28,title:'Единицы силы. Связь между силой тяжести и массой тела',types:['par','upr']},{num:29,title:'Сила тяжести на других планетах. Физические характеристики планет',types:['par']},{num:30,title:'Динамометр',types:['par','upr']},{num:31,title:'Сложение двух сил, направленных по одной прямой. Равнодействующая сил',types:['par','upr']},{num:32,title:'Сила трения',types:['par','upr']},{num:33,title:'Трение покоя',types:['par']},{num:34,title:'Трение в природе и технике',types:['par','ps']},{num:35,title:'Давление. Единицы давления',types:['par','upr','zad']},{num:36,title:'Способы уменьшения и увеличения давления',types:['par','upr','zad']},{num:37,title:'Давление газа',types:['par','zad']},{num:38,title:'Передача давления жидкостями и газами. Закон Паскаля',types:['par','upr','zad']},{num:39,title:'Давление в жидкости и газе',types:['par']},{num:40,title:'Расчёт давления жидкости на дно и стенки сосуда',types:['par','upr','zad']},{num:41,title:'Сообщающиеся сосуды',types:['par','upr','zad']},{num:42,title:'Вес воздуха. Атмосферное давление',types:['par','upr','zad']},{num:43,title:'Почему существует воздушная оболочка Земли',types:['par','upr']},{num:44,title:'Измерение атмосферного давления. Опыт Торричелли',types:['par','upr','zad']},{num:45,title:'Барометр-анероид',types:['par','upr']},{num:46,title:'Атмосферное давление на различных высотах',types:['par','upr','zad']},{num:47,title:'Манометры',types:['par']},{num:48,title:'Поршневой жидкостный насос',types:['par','upr']},{num:49,title:'Гидравлический пресс',types:['par','upr','zad']},{num:50,title:'Действие жидкости и газа на погружённое в них тело',types:['par']},{num:51,title:'Архимедова сила',types:['par','upr']},{num:52,title:'Плавание тел',types:['par','upr','zad']},{num:53,title:'Плавание судов',types:['par','upr','zad']},{num:54,title:'Воздухоплавание',types:['par','upr','ps']},{num:55,title:'Механическая работа. Единицы работы',types:['par','upr','zad']},{num:56,title:'Мощность. Единицы мощности',types:['par','upr','zad']},{num:57,title:'Простые механизмы',types:['par']},{num:58,title:'Рычаг. Равновесие сил на рычаге',types:['par']},{num:59,title:'Момент силы',types:['par']},{num:60,title:'Рычаги в технике, быту и природе',types:['par','upr']},{num:61,title:'Применение закона равновесия рычага к блоку',types:['par']},{num:62,title:'Равенство работ при использовании простых механизмов. «Золотое правило» механики',types:['par','upr','zad']},{num:63,title:'Центр тяжести тела',types:['par','zad']},{num:64,title:'Условия равновесия тел',types:['par']},{num:65,title:'Коэффициент полезного действия механизма',types:['par']},{num:66,title:'Энергия',types:['par']},{num:67,title:'Потенциальная и кинетическая энергия',types:['par','upr']},{num:68,title:'Превращение одного вида механической энергии в другой',types:['par','upr','ps']}], labs: [1,2,3,4,5,6,7,8,9,10,11] }
+            'physics': { baseUrl: 'https://reshak.ru/reshebniki/fizika/7/perishkin/images1/', format: '{type}/{num}.png', maxNum: 68, variants: false, smallImage: false, largeImage: true, isPhysics: true, paragraphs: [{num:1,title:'Что изучает физика',types:['par','zad']},{num:2,title:'Некоторые физические термины',types:['par']},{num:3,title:'Наблюдения и опыты',types:['par']},{num:4,title:'Физические величины. Измерение физических величин',types:['par','upr','zad']},{num:5,title:'Точность и погрешность измерений',types:['par','zad']},{num:6,title:'Физика и техника',types:['par','ps']},{num:7,title:'Строение вещества',types:['par']},{num:8,title:'Молекулы',types:['par']},{num:9,title:'Броуновское движение',types:['par','zad']},{num:10,title:'Диффузия в газах, жидкостях и твёрдых телах',types:['par','zad']},{num:11,title:'Взаимное притяжение и отталкивание молекул',types:['par','zad']},{num:12,title:'Агрегатные состояния вещества',types:['par']},{num:13,title:'Различие в молекулярном строении твёрдых тел, жидкостей и газов',types:['par','zad','ps']},{num:14,title:'Механическое движение',types:['par','upr','zad']},{num:15,title:'Равномерное и неравномерное движение',types:['par','zad']},{num:16,title:'Скорость. Единицы скорости',types:['par','upr']},{num:17,title:'Расчёт пути и времени движения',types:['par','upr','zad']},{num:18,title:'Инерция',types:['par','upr','zad']},{num:19,title:'Взаимодействие тел',types:['par']},{num:20,title:'Масса тела. Единицы массы',types:['par','upr']},{num:21,title:'Измерение массы тела на весах',types:['par','zad']},{num:22,title:'Плотность вещества',types:['par','upr','zad']},{num:23,title:'Расчёт массы и объёма тела по его плотности',types:['par','upr','zad']},{num:24,title:'Сила',types:['par','upr']},{num:25,title:'Явление тяготения. Сила тяжести',types:['par']},{num:26,title:'Сила упругости. Закон Гука',types:['par']},{num:27,title:'Вес тела',types:['par']},{num:28,title:'Единицы силы. Связь между силой тяжести и массой тела',types:['par','upr']},{num:29,title:'Сила тяжести на других планетах. Физические характеристики планет',types:['par']},{num:30,title:'Динамометр',types:['par','upr']},{num:31,title:'Сложение двух сил, направленных по одной прямой. Равнодействующая сил',types:['par','upr']},{num:32,title:'Сила трения',types:['par','upr']},{num:33,title:'Трение покоя',types:['par']},{num:34,title:'Трение в природе и технике',types:['par','ps']},{num:35,title:'Давление. Единицы давления',types:['par','upr','zad']},{num:36,title:'Способы уменьшения и увеличения давления',types:['par','upr','zad']},{num:37,title:'Давление газа',types:['par','zad']},{num:38,title:'Передача давления жидкостями и газами. Закон Паскаля',types:['par','upr','zad']},{num:39,title:'Давление в жидкости и газе',types:['par']},{num:40,title:'Расчёт давления жидкости на дно и стенки сосуда',types:['par','upr','zad']},{num:41,title:'Сообщающиеся сосуды',types:['par','upr','zad']},{num:42,title:'Вес воздуха. Атмосферное давление',types:['par','upr','zad']},{num:43,title:'Почему существует воздушная оболочка Земли',types:['par','upr']},{num:44,title:'Измерение атмосферного давления. Опыт Торричелли',types:['par','upr','zad']},{num:45,title:'Барометр-анероид',types:['par','upr']},{num:46,title:'Атмосферное давление на различных высотах',types:['par','upr','zad']},{num:47,title:'Манометры',types:['par']},{num:48,title:'Поршневой жидкостный насос',types:['par','upr']},{num:49,title:'Гидравлический пресс',types:['par','upr','zad']},{num:50,title:'Действие жидкости и газа на погружённое в них тело',types:['par']},{num:51,title:'Архимедова сила',types:['par','upr']},{num:52,title:'Плавание тел',types:['par','upr','zad']},{num:53,title:'Плавание судов',types:['par','upr','zad']},{num:54,title:'Воздухоплавание',types:['par','upr','ps']},{num:55,title:'Механическая работа. Единицы работы',types:['par','upr','zad']},{num:56,title:'Мощность. Единицы мощности',types:['par','upr','zad']},{num:57,title:'Простые механизмы',types:['par']},{num:58,title:'Рычаг. Равновесие сил на рычаге',types:['par']},{num:59,title:'Момент силы',types:['par']},{num:60,title:'Рычаги в технике, быту и природе',types:['par','upr']},{num:61,title:'Применение закона равновесия рычага к блоку',types:['par']},{num:62,title:'Равенство работ при использовании простых механизмов. «Золотое правило» механики',types:['par','upr','zad']},{num:63,title:'Центр тяжести тела',types:['par','zad']},{num:64,title:'Условия равновесия тел',types:['par']},{num:65,title:'Коэффициент полезного действия механизма',types:['par']},{num:66,title:'Энергия',types:['par']},{num:67,title:'Потенциальная и кинетическая энергия',types:['par','upr']},{num:68,title:'Превращение одного вида механической энергии в другой',types:['par','upr','ps']}], labs: [1,2,3,4,5,6,7,8,9,10,11] },
+            'biologya': { baseUrl: 'https://pomogalka.me/img/7-klass-makarychev-2023/', format: '{num}.png', maxNum: 1247, variants: false, smallImage: false },
         };
 
         const bookMetadata = {
@@ -3214,6 +3303,7 @@ function editorClear() {
                 document.getElementById('theme-switch').classList.add('active');
             }
             initSoundToggle();
+            initWatermarkToggle();
             initPanDrag();
         });
         // Функция для воспроизведения звука
@@ -3251,6 +3341,30 @@ function initSoundToggle() {
     const switchEl = document.getElementById('sound-switch');
     if (switchEl) {
         switchEl.classList.toggle('active', soundsEnabled);
+    }
+}
+
+// Watermark removal state
+let watermarkEnabled = localStorage.getItem('ulp-watermark-enabled') === 'true';
+
+function toggleWatermark() {
+    watermarkEnabled = !watermarkEnabled;
+    localStorage.setItem('ulp-watermark-enabled', watermarkEnabled);
+    document.getElementById('watermark-switch').classList.toggle('active', watermarkEnabled);
+    showNotification(watermarkEnabled ? 'Водяные знаки скрыты' : 'Водяные знаки видны', 'info');
+    // Re-process current image if on solution page
+    const solutionView = document.getElementById('solution-view');
+    if (solutionView && solutionView.classList.contains('active')) {
+        processSolutionImage();
+    }
+}
+
+function initWatermarkToggle() {
+    const saved = localStorage.getItem('ulp-watermark-enabled');
+    watermarkEnabled = saved === 'true';
+    const switchEl = document.getElementById('watermark-switch');
+    if (switchEl) {
+        switchEl.classList.toggle('active', watermarkEnabled);
     }
 }
 
